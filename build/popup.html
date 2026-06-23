@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+
+        @font-face {
+            font-family: 'LineSeed';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Th.woff2') format('woff2');
+            font-weight: 100;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'LineSeed';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Rg.woff2') format('woff2');
+            font-weight: 400;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'LineSeed';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+            font-weight: 700;
+            font-display: swap;
+        }
+        
+        body {
+            font-family: 'LineSeed';
+            padding: 20px;
+            text-align: center;
+            transition: all 0.5s ease;
+            min-width: 360px;
+        }
+
+        .title {
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+        
+        div {
+            font-size: 1.2em;
+        }
+
+        .desc1 {
+            font-size: 1.5em;
+        }
+
+        input, textarea {
+            width: 300px;
+            height: 25px;
+            font-size: 1.2em;
+            font-family: 'LineSeed';
+            border-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border-width: 1px;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 75px;
+            font-size: 0.8em;
+        }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-weight: 700;
+            font-size: 1.5em;
+            border-width: 0;
+            transform: scale(1);
+            background-color: rgba(0, 0, 0, 0);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-family: 'LineSeed';
+        }
+
+        button:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            transform: scale(0.9);
+        }
+
+        .errorBox {
+            display: none;
+            color: red;
+            font-size: 0.9em;
+        }
+
+        #saved-fonts-section {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        #saved-fonts-section .section-label {
+            font-size: 1em;
+            color: rgba(0,0,0,0.5);
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        #saved-fonts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .font-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.04);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.75em;
+            gap: 8px;
+            height: 18px;
+        }
+
+        .font-item-content {
+            position: relative;
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .font-item-name, .font-item-css {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .font-item-name {
+            color: rgba(0, 0, 0, 0.8);
+            font-weight: 700;
+            opacity: 1;
+        }
+
+        .font-item-css {
+            color: rgba(0, 0, 0, 0.45);
+            opacity: 0;
+        }
+
+        .font-item:hover .font-item-name {
+            opacity: 0;
+        }
+
+        .font-item:hover .font-item-css {
+            opacity: 1;
+        }
+
+        .font-delete-btn {
+            flex-shrink: 0;
+            padding: 3px 10px;
+            font-size: 0.9em;
+            margin-top: 0;
+            color: #e00;
+            border: 1px solid rgba(220,0,0,0.2);
+            border-radius: 20px;
+            background: rgba(220,0,0,0.05);
+            z-index: 2;
+        }
+
+        .font-delete-btn:hover {
+            background: rgba(220,0,0,0.15);
+            transform: scale(0.95);
+        }
+
+        #clear-all-btn {
+            font-size: 0.9em;
+            color: #e00;
+            margin-top: 6px;
+            padding: 6px 14px;
+        }
+
+        #ws      { display: none; }
+        #project { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="ws">
+        <div class="title">Entry-Fontter</div>
+        <div class="desc1">현재 글상자 오브젝트에 웹폰트 적용</div>
+        <br>
+        <div>웹폰트 주소 입력</div>
+        <br>
+        <textarea id="ws-webfontdir" placeholder="(@import, @font-face 등 CSS로 입력)"></textarea>
+        <br>
+        <div style="margin-top: 10px">웹폰트 이름 입력 (정확히 입력)</div>
+        <br>
+        <input id="ws-webfontname">
+        <button id="ws-applyfont">폰트 적용</button>
+        <p id="ws-errorBox" class="errorBox"></p>
+    </div>
+
+    <div id="project">
+        <div class="title">Entry-Fontter</div>
+        <div class="desc1">현재 작품에 웹폰트 적용</div>
+        <br>
+        <div>웹폰트 주소 입력 (줄바꿈으로 구분)</div>
+        <br>
+        <textarea id="project-webfontdir" placeholder="(@import, @font-face 등 CSS로 입력)"></textarea>
+        <br>
+        <button id="project-applyfont">폰트 적용 및 저장</button>
+        <p id="project-errorBox" class="errorBox"></p>
+
+        <div id="saved-fonts-section">
+            <div class="section-label">저장된 폰트 (새로고침 후 자동 적용)</div>
+            <div id="saved-fonts-list"></div>
+            <button id="clear-all-btn" style="display:none;">전체 삭제</button>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
